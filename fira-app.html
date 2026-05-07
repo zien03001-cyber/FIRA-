@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FIRA — Fasilitas Informasi Rumah sakit Aplikasi</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #0D47A1;
+    --primary-light: #1565C0;
+    --primary-pale: #E3F2FD;
+    --accent: #00BCD4;
+    --accent-light: #E0F7FA;
+    --success: #2E7D32;
+    --success-light: #E8F5E9;
+    --warning: #F57F17;
+    --warning-light: #FFF8E1;
+    --danger: #C62828;
+    --danger-light: #FFEBEE;
+    --purple: #6A1B9A;
+    --purple-light: #F3E5F5;
+    --bg: #F4F7FB;
+    --surface: #FFFFFF;
+    --surface2: #F0F4F8;
+    --border: #E0E7F0;
+    --text: #0D1B2A;
+    --text2: #4A5568;
+    --text3: #90A4B8;
+    --shadow: 0 4px 24px rgba(13,71,161,0.10);
+    --shadow-sm: 0 2px 8px rgba(13,71,161,0.07);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ===== PHONE SHELL ===== */
+  .phone-shell {
+    width: 390px;
+    min-height: 780px;
+    background: var(--surface);
+    border-radius: 48px;
+    box-shadow: 0 32px 80px rgba(13,71,161,0.18), 0 0 0 2px #E0E7F0;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .notch {
+    width: 120px; height: 28px;
+    background: #0a0a0a;
+    border-radius: 0 0 20px 20px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 10;
+  }
+  .status-bar {
+    background: var(--primary);
+    padding: 4px 24px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: rgba(255,255,255,0.85);
+    font-weight: 500;
+  }
+
+  /* ===== SCREENS ===== */
+  .screen { display: none; flex-direction: column; flex: 1; overflow-y: auto; }
+  .screen.active { display: flex; }
+  .screen::-webkit-scrollbar { width: 0; }
+
+  /* ===== HEADER ===== */
+  .app-header {
+    background: var(--primary);
+    padding: 14px 22px 18px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .app-header::before {
+    content: '';
+    position: absolute;
+    right: -30px; top: -30px;
+    width: 160px; height: 160px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 50%;
+  }
+  .app-header::after {
+    content: '';
+    position: absolute;
+    right: 30px; top: 40px;
+    width: 80px; height: 80px;
+    background: rgba(0,188,212,0.15);
+    border-radius: 50%;
+  }
+  .header-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+  .logo-text { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
+  .logo-text span { color: var(--accent); }
+  .header-sub { font-size: 12px; opacity: 0.75; }
+  .header-user { font-size: 13px; margin-top: 8px; font-weight: 600; }
+  .header-loc { font-size: 11px; opacity: 0.7; margin-top: 2px; }
+  .notif-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    border: none; cursor: pointer; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; position: relative;
+  }
+  .notif-dot {
+    width: 8px; height: 8px;
+    background: #FF5252;
+    border-radius: 50%;
+    position: absolute; top: 4px; right: 4px;
+    border: 1.5px solid var(--primary);
+  }
+
+  /* ===== CONTENT ===== */
+  .content { padding: 18px 18px 90px; flex: 1; }
+  .section-title { font-size: 13px; font-weight: 700; color: var(--text2); letter-spacing: .04em; text-transform: uppercase; margin-bottom: 12px; }
+
+  /* ===== ANTREAN CARD ===== */
+  .antrean-card {
+    background: linear-gradient(135deg, var(--primary-light), var(--primary));
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform .2s;
+  }
+  .antrean-card:hover { transform: scale(1.01); }
+  .antrean-card::before {
+    content: '';
+    position: absolute; right: -20px; bottom: -20px;
+    width: 120px; height: 120px;
+    background: rgba(255,255,255,0.07);
+    border-radius: 50%;
+  }
+  .aq-label { font-size: 11px; opacity: .8; margin-bottom: 4px; }
+  .aq-num { font-family: 'Syne', sans-serif; font-size: 38px; font-weight: 800; line-height: 1; }
+  .aq-right { text-align: right; }
+  .aq-wait { font-size: 22px; font-weight: 700; }
+  .aq-info { font-size: 11px; opacity: .75; margin-top: 3px; }
+  .aq-pulse {
+    width: 10px; height: 10px;
+    background: #69FF7A;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(0.8)} }
+
+  /* ===== MENU GRID ===== */
+  .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .menu-item {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 14px;
+    cursor: pointer;
+    transition: all .2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .menu-item:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: transparent; }
+  .menu-item::before {
+    content: '';
+    position: absolute; right: -10px; bottom: -10px;
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    opacity: 0.08;
+    transition: all .3s;
+  }
+  .menu-item:hover::before { opacity: 0.15; transform: scale(1.2); }
+  .menu-item.blue::before { background: var(--primary); }
+  .menu-item.green::before { background: var(--success); }
+  .menu-item.amber::before { background: var(--warning); }
+  .menu-item.teal::before { background: var(--accent); }
+  .menu-icon {
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  .menu-icon.blue { background: var(--primary-pale); color: var(--primary); }
+  .menu-icon.green { background: var(--success-light); color: var(--success); }
+  .menu-icon.amber { background: var(--warning-light); color: var(--warning); }
+  .menu-icon.teal { background: var(--accent-light); color: #006064; }
+  .menu-item h4 { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+  .menu-item p { font-size: 11px; color: var(--text3); }
+
+  /* ===== NOTIF LIST ===== */
+  .notif-list { display: flex; flex-direction: column; gap: 8px; }
+  .notif-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 11px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .notif-item:hover { background: var(--primary-pale); border-color: var(--primary); }
+  .notif-dot-color {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .notif-text-main { font-size: 12px; font-weight: 600; color: var(--text); }
+  .notif-text-sub { font-size: 11px; color: var(--text3); margin-top: 1px; }
+
+  /* ===== BOTTOM NAV ===== */
+  .bottom-nav {
+    position: sticky; bottom: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 10px 18px 18px;
+    display: flex;
+    justify-content: space-around;
+    z-index: 50;
+  }
+  .nav-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    font-size: 10px; font-weight: 600; color: var(--text3);
+    cursor: pointer; padding: 4px 14px; border-radius: 12px;
+    transition: all .2s; border: none; background: none;
+  }
+  .nav-btn .nav-icon { font-size: 22px; transition: all .2s; }
+  .nav-btn.active { color: var(--primary); }
+  .nav-btn.active .nav-icon { color: var(--primary); }
+
+  /* ===== INNER SCREEN HEADER ===== */
+  .inner-header {
+    background: var(--primary);
+    padding: 14px 22px 16px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .back-btn {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    border: none; color: #fff; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  .inner-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; }
+
+  /* ===== FORM STYLES ===== */
+  .form-group { margin-bottom: 16px; }
+  .form-label { font-size: 12px; font-weight: 700; color: var(--text2); margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: .04em; }
+  .form-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    transition: border-color .2s;
+  }
+  .form-input:focus { border-color: var(--primary-light); background: #fff; }
+  select.form-input { appearance: none; cursor: pointer; }
+
+  /* ===== POLI GRID ===== */
+  .poli-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .poli-card {
+    background: var(--surface2);
+    border: 2px solid transparent;
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .poli-card:hover, .poli-card.selected { border-color: var(--primary-light); background: var(--primary-pale); }
+  .poli-card .poli-icon { font-size: 24px; margin-bottom: 5px; display: block; }
+  .poli-card span { font-size: 12px; font-weight: 600; color: var(--text); }
+
+  /* ===== DATE PILLS ===== */
+  .date-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .date-pill {
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    font-size: 12px; font-weight: 600; cursor: pointer;
+    transition: all .2s; color: var(--text2);
+  }
+  .date-pill:hover, .date-pill.selected { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+  /* ===== BUTTON ===== */
+  .btn-primary {
+    width: 100%;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .2s;
+    letter-spacing: .02em;
+  }
+  .btn-primary:hover { background: var(--primary-light); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(13,71,161,0.3); }
+  .btn-primary:active { transform: scale(0.98); }
+
+  .btn-outline {
+    width: 100%;
+    background: transparent;
+    color: var(--primary);
+    border: 1.5px solid var(--primary);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .2s;
+    margin-top: 10px;
+  }
+  .btn-outline:hover { background: var(--primary-pale); }
+
+  /* ===== REKAM MEDIS ===== */
+  .pasien-card {
+    background: var(--primary);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .avatar {
+    width: 50px; height: 50px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 18px; font-weight: 800;
+    flex-shrink: 0;
+  }
+  .rm-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .rm-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    cursor: pointer;
+    transition: all .2s;
+    border-left: 4px solid var(--primary);
+  }
+  .rm-item:hover { box-shadow: var(--shadow-sm); }
+  .rm-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .rm-poli { font-size: 13px; font-weight: 700; }
+  .rm-badge {
+    font-size: 10px; font-weight: 600;
+    padding: 3px 8px; border-radius: 20px;
+  }
+  .rm-dokter { font-size: 12px; color: var(--text2); }
+  .rm-diagnosis { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  .resep-card {
+    background: var(--warning-light);
+    border: 1px solid #FFD54F;
+    border-radius: var(--radius-sm);
+    padding: 14px;
+  }
+  .resep-item { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px dashed #FFE082; }
+  .resep-item:last-child { border-bottom: none; }
+  .resep-dot { width: 8px; height: 8px; background: var(--warning); border-radius: 50%; flex-shrink: 0; }
+
+  /* ===== PENGINGAT ===== */
+  .obat-list { display: flex; flex-direction: column; gap: 10px; }
+  .obat-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .obat-left { display: flex; align-items: center; gap: 12px; }
+  .obat-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: var(--purple-light);
+    color: var(--purple);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .obat-name { font-size: 13px; font-weight: 700; }
+  .obat-dose { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .toggle-wrap { position: relative; width: 44px; height: 24px; }
+  .toggle-wrap input { opacity: 0; width: 0; height: 0; position: absolute; }
+  .toggle-slider {
+    position: absolute; inset: 0;
+    background: var(--border);
+    border-radius: 24px;
+    cursor: pointer;
+    transition: .3s;
+  }
+  .toggle-slider::before {
+    content: '';
+    position: absolute;
+    width: 18px; height: 18px;
+    left: 3px; top: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: .3s;
+  }
+  .toggle-wrap input:checked + .toggle-slider { background: var(--success); }
+  .toggle-wrap input:checked + .toggle-slider::before { transform: translateX(20px); }
+  .time-badge {
+    font-size: 11px;
+    font-weight: 700;
+    background: var(--purple-light);
+    color: var(--purple);
+    padding: 3px 8px;
+    border-radius: 6px;
+    margin-top: 4px;
+    display: inline-block;
+  }
+
+  /* ===== PROFIL ===== */
+  .profil-header {
+    background: var(--primary);
+    padding: 30px 22px 40px;
+    text-align: center;
+    color: #fff;
+    position: relative;
+  }
+  .profil-avatar {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    border: 3px solid rgba(255,255,255,0.4);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 28px; font-weight: 800;
+    margin: 0 auto 10px;
+  }
+  .profil-name { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; }
+  .profil-id { font-size: 12px; opacity: .75; margin-top: 3px; }
+  .profil-stats {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    background: var(--surface);
+    margin: -1px 18px 0;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .stat-box { padding: 14px 10px; text-align: center; border-right: 1px solid var(--border); }
+  .stat-box:last-child { border-right: none; }
+  .stat-num { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--primary); }
+  .stat-label { font-size: 10px; color: var(--text3); margin-top: 2px; font-weight: 600; }
+  .info-list { display: flex; flex-direction: column; gap: 0; background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; margin-bottom: 16px; }
+  .info-row {
+    display: flex; justify-content: space-between;
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .info-row:last-child { border-bottom: none; }
+  .info-key { color: var(--text3); font-weight: 600; font-size: 12px; }
+  .info-val { font-weight: 600; color: var(--text); }
+
+  /* ===== SUCCESS TOAST ===== */
+  .toast {
+    position: fixed;
+    bottom: 120px;
+    left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--success);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 600;
+    opacity: 0;
+    transition: all .3s;
+    z-index: 1000;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ===== LOGIN SCREEN ===== */
+  .login-screen {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px 30px;
+    background: linear-gradient(160deg, var(--primary) 0%, #1976D2 50%, #0288D1 100%);
+  }
+  .login-logo { font-family: 'Syne', sans-serif; font-size: 48px; font-weight: 800; color: #fff; margin-bottom: 4px; }
+  .login-logo span { color: var(--accent); }
+  .login-sub { font-size: 14px; color: rgba(255,255,255,0.7); margin-bottom: 40px; }
+  .login-card {
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 24px;
+    padding: 24px 22px;
+  }
+  .login-label { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.8); margin-bottom: 6px; display: block; letter-spacing: .04em; text-transform: uppercase; }
+  .login-input {
+    width: 100%;
+    background: rgba(255,255,255,0.15);
+    border: 1.5px solid rgba(255,255,255,0.25);
+    border-radius: 12px;
+    padding: 13px 16px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px; color: #fff;
+    outline: none; margin-bottom: 14px;
+    transition: border-color .2s;
+  }
+  .login-input::placeholder { color: rgba(255,255,255,0.5); }
+  .login-input:focus { border-color: var(--accent); }
+  .btn-login {
+    width: 100%;
+    background: #fff;
+    color: var(--primary);
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all .2s;
+    letter-spacing: .01em;
+    margin-top: 6px;
+  }
+  .btn-login:hover { background: var(--accent); color: #fff; }
+  .login-footer { text-align: center; margin-top: 20px; font-size: 12px; color: rgba(255,255,255,0.6); }
+  .login-footer a { color: rgba(255,255,255,0.9); font-weight: 700; cursor: pointer; }
+
+  /* ===== ANTREAN SCREEN ===== */
+  .big-antrean {
+    background: linear-gradient(135deg, var(--primary), #1976D2);
+    border-radius: var(--radius);
+    padding: 30px;
+    text-align: center;
+    color: #fff;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .big-antrean::before { content:''; position:absolute; right:-40px;top:-40px;width:180px;height:180px;background:rgba(255,255,255,.06);border-radius:50%; }
+  .big-num { font-family: 'Syne', sans-serif; font-size: 72px; font-weight: 800; line-height: 1; }
+  .big-label { font-size: 13px; opacity: .75; margin-bottom: 8px; }
+  .big-info { font-size: 14px; font-weight: 600; margin-top: 10px; }
+  .progress-bar-wrap { background: rgba(255,255,255,.2); border-radius: 10px; height: 8px; margin-top: 14px; overflow: hidden; }
+  .progress-bar { height: 100%; background: var(--accent); border-radius: 10px; width: 68%; animation: load 1.5s ease; }
+  @keyframes load { from{width:0} }
+  .antrian-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+  .info-tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    text-align: center;
+  }
+  .info-tile .val { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--primary); }
+  .info-tile .lbl { font-size: 11px; color: var(--text3); margin-top: 2px; font-weight: 600; }
+  .queue-list { display: flex; flex-direction: column; gap: 8px; }
+  .queue-item {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 12px 14px;
+  }
+  .queue-item.current { border-color: var(--primary); background: var(--primary-pale); }
+  .q-num { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 800; width: 54px; flex-shrink:0; color: var(--primary); }
+  .q-name { font-size: 13px; font-weight: 600; }
+  .q-status { font-size: 11px; margin-top: 2px; }
+  .badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; margin-left: auto; }
+  .badge.wait { background: var(--warning-light); color: var(--warning); }
+  .badge.now { background: var(--success-light); color: var(--success); }
+  .badge.done { background: var(--surface2); color: var(--text3); }
+</style>
+</head>
+<body>
+
+<div class="phone-shell">
+  <div class="notch"></div>
+  <div class="status-bar">
+    <span id="clock">09:24</span>
+    <span>FIRA • RS Umum Daerah</span>
+    <span>● 4G</span>
+  </div>
+
+  <!-- ==================== LOGIN ==================== -->
+  <div class="screen active" id="screen-login" style="flex:1;">
+    <div class="login-screen">
+      <div class="login-logo">FI<span>RA</span></div>
+      <div class="login-sub">Fasilitas Informasi Rumah sakit Aplikasi</div>
+      <div class="login-card">
+        <label class="login-label">Nomor HP / Email</label>
+        <input class="login-input" type="text" id="login-user" placeholder="cth: 08123456789" value="safira">
+        <label class="login-label">Kata Sandi</label>
+        <input class="login-input" type="password" id="login-pass" placeholder="••••••••" value="1234">
+        <button class="btn-login" onclick="doLogin()">Masuk ke FIRA</button>
+      </div>
+      <div class="login-footer">Belum punya akun? <a onclick="showToast('Fitur daftar akun akan segera hadir!')">Daftar Sekarang</a></div>
+    </div>
+  </div>
+
+  <!-- ==================== BERANDA ==================== -->
+  <div class="screen" id="screen-home">
+    <div class="app-header">
+      <div class="header-top">
+        <div>
+          <div class="logo-text">FI<span>RA</span></div>
+          <div class="header-sub">Fasilitas Informasi Rumah sakit</div>
+        </div>
+        <button class="notif-btn" onclick="showToast('3 notifikasi baru')">
+          🔔<div class="notif-dot"></div>
+        </button>
+      </div>
+      <div class="header-user">👋 Halo, Safira Awalia</div>
+      <div class="header-loc">📍 RS Umum Daerah Banjarmasin</div>
+    </div>
+    <div class="content">
+      <div class="antrean-card" onclick="goTo('antrean')">
+        <div>
+          <div class="aq-label"><span class="aq-pulse"></span>Antrean Aktif — Poli Umum</div>
+          <div class="aq-num">A-024</div>
+          <div style="font-size:12px;opacity:.75;margin-top:4px">dr. Sari Dewi, Sp.PD</div>
+        </div>
+        <div class="aq-right">
+          <div class="aq-wait">~12 mnt</div>
+          <div class="aq-info">Sisa 3 pasien</div>
+          <div style="font-size:11px;opacity:.6;margin-top:6px">Ketuk untuk detail →</div>
+        </div>
+      </div>
+
+      <div class="section-title">Layanan</div>
+      <div class="menu-grid">
+        <div class="menu-item blue" onclick="goTo('daftar')">
+          <div class="menu-icon blue">📋</div>
+          <h4>Daftar Berobat</h4>
+          <p>Pilih poli & jadwal</p>
+        </div>
+        <div class="menu-item green" onclick="goTo('antrean')">
+          <div class="menu-icon green">🎫</div>
+          <h4>Antrean</h4>
+          <p>Status antrean kini</p>
+        </div>
+        <div class="menu-item amber" onclick="goTo('pengingat')">
+          <div class="menu-icon amber">💊</div>
+          <h4>Pengingat Obat</h4>
+          <p>Jadwal minum obat</p>
+        </div>
+        <div class="menu-item teal" onclick="goTo('rekam')">
+          <div class="menu-icon teal">📁</div>
+          <h4>Rekam Medis</h4>
+          <p>Riwayat & resep</p>
+        </div>
+      </div>
+
+      <div class="section-title">Notifikasi</div>
+      <div class="notif-list">
+        <div class="notif-item">
+          <div class="notif-dot-color" style="background:#FFF8E1;color:#F57F17">💊</div>
+          <div>
+            <div class="notif-text-main">Pengingat: Amoxicillin 500mg</div>
+            <div class="notif-text-sub">Minum sekarang — 09:00 WIB</div>
+          </div>
+        </div>
+        <div class="notif-item">
+          <div class="notif-dot-color" style="background:#E3F2FD;color:#1565C0">📅</div>
+          <div>
+            <div class="notif-text-main">Janji: dr. Sari — Poli Umum</div>
+            <div class="notif-text-sub">Senin, 12 Mei 2026 • 09:30 WIB</div>
+          </div>
+        </div>
+        <div class="notif-item">
+          <div class="notif-dot-color" style="background:#E8F5E9;color:#2E7D32">✅</div>
+          <div>
+            <div class="notif-text-main">Antrean A-024 hampir tiba</div>
+            <div class="notif-text-sub">Estimasi 12 menit lagi</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <button class="nav-btn active" onclick="goTo('home')"><span class="nav-icon">🏠</span>Beranda</button>
+      <button class="nav-btn" onclick="goTo('daftar')"><span class="nav-icon">📋</span>Daftar</button>
+      <button class="nav-btn" onclick="goTo('rekam')"><span class="nav-icon">📁</span>Rekam</button>
+      <button class="nav-btn" onclick="goTo('profil')"><span class="nav-icon">👤</span>Profil</button>
+    </div>
+  </div>
+
+  <!-- ==================== DAFTAR BEROBAT ==================== -->
+  <div class="screen" id="screen-daftar">
+    <div class="inner-header">
+      <button class="back-btn" onclick="goTo('home')">←</button>
+      <div class="inner-title">Daftar Berobat</div>
+    </div>
+    <div class="content">
+      <div class="form-group">
+        <label class="form-label">Pilih Poli</label>
+        <div class="poli-grid">
+          <div class="poli-card selected" onclick="selectPoli(this)"><span class="poli-icon">🩺</span><span>Poli Umum</span></div>
+          <div class="poli-card" onclick="selectPoli(this)"><span class="poli-icon">❤️</span><span>Poli Jantung</span></div>
+          <div class="poli-card" onclick="selectPoli(this)"><span class="poli-icon">🦷</span><span>Poli Gigi</span></div>
+          <div class="poli-card" onclick="selectPoli(this)"><span class="poli-icon">👁️</span><span>Poli Mata</span></div>
+          <div class="poli-card" onclick="selectPoli(this)"><span class="poli-icon">🦴</span><span>Ortopedi</span></div>
+          <div class="poli-card" onclick="selectPoli(this)"><span class="poli-icon">🧠</span><span>Neurologi</span></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Pilih Jadwal</label>
+        <div class="date-pills">
+          <div class="date-pill selected" onclick="selectDate(this)">Sen 12/5</div>
+          <div class="date-pill" onclick="selectDate(this)">Sel 13/5</div>
+          <div class="date-pill" onclick="selectDate(this)">Rab 14/5</div>
+          <div class="date-pill" onclick="selectDate(this)">Kam 15/5</div>
+          <div class="date-pill" onclick="selectDate(this)">Jum 16/5</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Pilih Dokter</label>
+        <select class="form-input">
+          <option>dr. Sari Dewi, Sp.PD — 08:00-12:00</option>
+          <option>dr. Budi Santoso, Sp.PD — 13:00-17:00</option>
+          <option>dr. Rina Lestari, Sp.PD — 08:00-11:00</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Jenis Jaminan</label>
+        <select class="form-input">
+          <option>BPJS Kesehatan</option>
+          <option>Umum / Mandiri</option>
+          <option>Asuransi Swasta</option>
+          <option>Jamkesda</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Keluhan Utama</label>
+        <textarea class="form-input" rows="3" placeholder="Tuliskan keluhan Anda...">Batuk dan pilek sejak 3 hari</textarea>
+      </div>
+
+      <button class="btn-primary" onclick="confirmDaftar()">✅ Konfirmasi Pendaftaran</button>
+      <button class="btn-outline" onclick="goTo('home')">Batalkan</button>
+    </div>
+  </div>
+
+  <!-- ==================== ANTREAN ==================== -->
+  <div class="screen" id="screen-antrean">
+    <div class="inner-header">
+      <button class="back-btn" onclick="goTo('home')">←</button>
+      <div class="inner-title">Status Antrean</div>
+    </div>
+    <div class="content">
+      <div class="big-antrean">
+        <div class="big-label">Nomor Antrean Anda</div>
+        <div class="big-num">A-024</div>
+        <div class="big-info">Poli Umum • dr. Sari Dewi, Sp.PD</div>
+        <div class="progress-bar-wrap"><div class="progress-bar"></div></div>
+        <div style="font-size:12px;opacity:.7;margin-top:6px">Sedang dilayani: A-021</div>
+      </div>
+
+      <div class="antrian-info-grid">
+        <div class="info-tile"><div class="val">~12</div><div class="lbl">Menit estimasi</div></div>
+        <div class="info-tile"><div class="val">3</div><div class="lbl">Pasien di depan</div></div>
+        <div class="info-tile"><div class="val">A-021</div><div class="lbl">Dipanggil kini</div></div>
+        <div class="info-tile"><div class="val">Lantai 2</div><div class="lbl">Ruang Poli Umum</div></div>
+      </div>
+
+      <div class="section-title">Daftar Antrean</div>
+      <div class="queue-list">
+        <div class="queue-item"><div class="q-num">A-019</div><div><div class="q-name">Budi R.</div><div class="q-status" style="color:var(--text3)">Poli Umum</div></div><div class="badge done">Selesai</div></div>
+        <div class="queue-item"><div class="q-num">A-020</div><div><div class="q-name">Siti M.</div><div class="q-status" style="color:var(--text3)">Poli Umum</div></div><div class="badge done">Selesai</div></div>
+        <div class="queue-item"><div class="q-num">A-021</div><div><div class="q-name">Ahmad F.</div><div class="q-status" style="color:var(--success)">Sedang dilayani</div></div><div class="badge now">Kini</div></div>
+        <div class="queue-item"><div class="q-num">A-022</div><div><div class="q-name">Dewi S.</div><div class="q-status" style="color:var(--text3)">Poli Umum</div></div><div class="badge wait">Menunggu</div></div>
+        <div class="queue-item"><div class="q-num">A-023</div><div><div class="q-name">Hasan K.</div><div class="q-status" style="color:var(--text3)">Poli Umum</div></div><div class="badge wait">Menunggu</div></div>
+        <div class="queue-item current"><div class="q-num">A-024</div><div><div class="q-name">Safira A. ⭐</div><div class="q-status" style="color:var(--primary)">Antrean Anda</div></div><div class="badge wait">Menunggu</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== REKAM MEDIS ==================== -->
+  <div class="screen" id="screen-rekam">
+    <div class="inner-header">
+      <button class="back-btn" onclick="goTo('home')">←</button>
+      <div class="inner-title">Rekam Medis</div>
+    </div>
+    <div class="content">
+      <div class="pasien-card">
+        <div class="avatar">SA</div>
+        <div>
+          <div style="font-size:15px;font-weight:700">Safira Awalia</div>
+          <div style="font-size:12px;opacity:.75;margin-top:2px">No. RM: 2024-05-0123</div>
+          <div style="font-size:11px;opacity:.6;margin-top:2px">Gol. Darah: A  •  BPJS Aktif</div>
+        </div>
+      </div>
+
+      <div class="section-title">Riwayat Kunjungan</div>
+      <div class="rm-list">
+        <div class="rm-item" onclick="showToast('Detail kunjungan 5 Mei 2026')">
+          <div class="rm-top">
+            <div class="rm-poli">Poli Umum</div>
+            <div class="rm-badge" style="background:var(--primary-pale);color:var(--primary)">5 Mei 2026</div>
+          </div>
+          <div class="rm-dokter">dr. Sari Dewi, Sp.PD</div>
+          <div class="rm-diagnosis">Diagnosis: ISPA — Flu & Batuk</div>
+        </div>
+        <div class="rm-item" style="border-left-color:var(--purple)" onclick="showToast('Detail kunjungan 3 Apr 2026')">
+          <div class="rm-top">
+            <div class="rm-poli">Poli Jantung</div>
+            <div class="rm-badge" style="background:var(--purple-light);color:var(--purple)">3 Apr 2026</div>
+          </div>
+          <div class="rm-dokter">dr. Budi Santoso, Sp.JP</div>
+          <div class="rm-diagnosis">Pemeriksaan rutin EKG — Normal</div>
+        </div>
+        <div class="rm-item" style="border-left-color:var(--success)" onclick="showToast('Detail kunjungan 10 Jan 2026')">
+          <div class="rm-top">
+            <div class="rm-poli">Poli Umum</div>
+            <div class="rm-badge" style="background:var(--success-light);color:var(--success)">10 Jan 2026</div>
+          </div>
+          <div class="rm-dokter">dr. Sari Dewi, Sp.PD</div>
+          <div class="rm-diagnosis">Diagnosis: GEA — Demam & Diare</div>
+        </div>
+      </div>
+
+      <div class="section-title">Resep Aktif</div>
+      <div class="resep-card">
+        <div class="resep-item">
+          <div class="resep-dot"></div>
+          <div>
+            <div style="font-size:13px;font-weight:700">Amoxicillin 500mg</div>
+            <div style="font-size:11px;color:var(--text3)">3× sehari sesudah makan • 5 hari</div>
+          </div>
+        </div>
+        <div class="resep-item">
+          <div class="resep-dot"></div>
+          <div>
+            <div style="font-size:13px;font-weight:700">Paracetamol 500mg</div>
+            <div style="font-size:11px;color:var(--text3)">3× sehari jika demam • Bila perlu</div>
+          </div>
+        </div>
+        <div class="resep-item">
+          <div class="resep-dot"></div>
+          <div>
+            <div style="font-size:13px;font-weight:700">CTM 4mg</div>
+            <div style="font-size:11px;color:var(--text3)">1× malam hari sebelum tidur • 5 hari</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== PENGINGAT OBAT ==================== -->
+  <div class="screen" id="screen-pengingat">
+    <div class="inner-header">
+      <button class="back-btn" onclick="goTo('home')">←</button>
+      <div class="inner-title">Pengingat Obat</div>
+    </div>
+    <div class="content">
+      <div style="background:var(--purple-light);border-radius:var(--radius);padding:16px 18px;margin-bottom:20px;display:flex;align-items:center;gap:14px">
+        <div style="font-size:32px">💊</div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--purple)">Hari ini: 3 jadwal minum obat</div>
+          <div style="font-size:12px;color:var(--purple);opacity:.75;margin-top:2px">Sudah minum 1 dari 3</div>
+        </div>
+      </div>
+
+      <div class="section-title">Jadwal Hari Ini</div>
+      <div class="obat-list">
+        <div class="obat-item">
+          <div class="obat-left">
+            <div class="obat-icon">💊</div>
+            <div>
+              <div class="obat-name">Amoxicillin 500mg</div>
+              <div class="obat-dose">1 kapsul • Sesudah makan</div>
+              <div class="time-badge">08:00 · 14:00 · 20:00</div>
+            </div>
+          </div>
+          <label class="toggle-wrap">
+            <input type="checkbox" checked onchange="showToast(this.checked ? 'Pengingat diaktifkan' : 'Pengingat dimatikan')">
+            <div class="toggle-slider"></div>
+          </label>
+        </div>
+        <div class="obat-item">
+          <div class="obat-left">
+            <div class="obat-icon">🔵</div>
+            <div>
+              <div class="obat-name">Paracetamol 500mg</div>
+              <div class="obat-dose">1 tablet • Bila demam</div>
+              <div class="time-badge">Bila perlu (PRN)</div>
+            </div>
+          </div>
+          <label class="toggle-wrap">
+            <input type="checkbox" checked onchange="showToast(this.checked ? 'Pengingat diaktifkan' : 'Pengingat dimatikan')">
+            <div class="toggle-slider"></div>
+          </label>
+        </div>
+        <div class="obat-item">
+          <div class="obat-left">
+            <div class="obat-icon">🟡</div>
+            <div>
+              <div class="obat-name">CTM 4mg</div>
+              <div class="obat-dose">1 tablet • Sebelum tidur</div>
+              <div class="time-badge">21:00</div>
+            </div>
+          </div>
+          <label class="toggle-wrap">
+            <input type="checkbox" onchange="showToast(this.checked ? 'Pengingat diaktifkan' : 'Pengingat dimatikan')">
+            <div class="toggle-slider"></div>
+          </label>
+        </div>
+      </div>
+
+      <div style="margin-top:20px">
+        <button class="btn-primary" onclick="showToast('Pengingat obat baru berhasil ditambahkan!')">+ Tambah Pengingat Obat</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== PROFIL ==================== -->
+  <div class="screen" id="screen-profil">
+    <div class="profil-header">
+      <div class="profil-avatar">SA</div>
+      <div class="profil-name">Safira Awalia</div>
+      <div class="profil-id">Pengguna FIRA • No. RM: 2024-05-0123</div>
+    </div>
+    <div class="profil-stats">
+      <div class="stat-box"><div class="stat-num">3</div><div class="stat-label">Kunjungan</div></div>
+      <div class="stat-box"><div class="stat-num">3</div><div class="stat-label">Obat Aktif</div></div>
+      <div class="stat-box"><div class="stat-num">A-024</div><div class="stat-label">Antrean</div></div>
+    </div>
+    <div style="padding: 0 18px 80px;">
+      <div class="section-title" style="margin-bottom:10px">Data Pribadi</div>
+      <div class="info-list">
+        <div class="info-row"><span class="info-key">Nama Lengkap</span><span class="info-val">Safira Awalia</span></div>
+        <div class="info-row"><span class="info-key">No. HP</span><span class="info-val">0812-3456-7890</span></div>
+        <div class="info-row"><span class="info-key">Tanggal Lahir</span><span class="info-val">15 Mar 2002</span></div>
+        <div class="info-row"><span class="info-key">Golongan Darah</span><span class="info-val">A+</span></div>
+        <div class="info-row"><span class="info-key">Jaminan</span><span class="info-val">BPJS Kesehatan</span></div>
+        <div class="info-row"><span class="info-key">Kelas</span><span class="info-val">6A SI REG BJM</span></div>
+      </div>
+      <button class="btn-outline" onclick="showToast('Fitur edit profil segera hadir!')">✏️ Edit Profil</button>
+      <button class="btn-outline" style="margin-top:8px;color:var(--danger);border-color:var(--danger)" onclick="doLogout()">🚪 Keluar</button>
+    </div>
+    <div class="bottom-nav">
+      <button class="nav-btn" onclick="goTo('home')"><span class="nav-icon">🏠</span>Beranda</button>
+      <button class="nav-btn" onclick="goTo('daftar')"><span class="nav-icon">📋</span>Daftar</button>
+      <button class="nav-btn" onclick="goTo('rekam')"><span class="nav-icon">📁</span>Rekam</button>
+      <button class="nav-btn active" onclick="goTo('profil')"><span class="nav-icon">👤</span>Profil</button>
+    </div>
+  </div>
+
+</div><!-- /phone-shell -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // Clock
+  function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    document.getElementById('clock').textContent = h + ':' + m;
+  }
+  updateClock();
+  setInterval(updateClock, 10000);
+
+  const screens = {
+    login: 'screen-login',
+    home: 'screen-home',
+    daftar: 'screen-daftar',
+    antrean: 'screen-antrean',
+    rekam: 'screen-rekam',
+    pengingat: 'screen-pengingat',
+    profil: 'screen-profil'
+  };
+
+  function goTo(name) {
+    Object.values(screens).forEach(id => {
+      const el = document.getElementById(id);
+      if(el) el.classList.remove('active');
+    });
+    const target = document.getElementById(screens[name]);
+    if(target) {
+      target.classList.add('active');
+      target.scrollTop = 0;
+    }
+  }
+
+  function doLogin() {
+    const u = document.getElementById('login-user').value;
+    const p = document.getElementById('login-pass').value;
+    if(u && p) {
+      showToast('Selamat datang, Safira! 👋');
+      setTimeout(() => goTo('home'), 600);
+    } else {
+      showToast('Masukkan nomor HP dan kata sandi');
+    }
+  }
+
+  function doLogout() {
+    showToast('Sampai jumpa, Safira! 👋');
+    setTimeout(() => goTo('login'), 800);
+  }
+
+  function selectPoli(el) {
+    document.querySelectorAll('.poli-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function selectDate(el) {
+    document.querySelectorAll('.date-pill').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function confirmDaftar() {
+    showToast('✅ Pendaftaran berhasil! Antrean baru: A-025');
+    setTimeout(() => goTo('home'), 1200);
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+</script>
+</body>
+</html>
